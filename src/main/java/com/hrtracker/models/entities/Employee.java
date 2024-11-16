@@ -28,4 +28,8 @@ public class Employee {
 
     @Column(name = "email")
     private String email;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
 }
