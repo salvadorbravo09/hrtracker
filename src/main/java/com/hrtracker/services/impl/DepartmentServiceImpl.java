@@ -4,6 +4,7 @@ import com.hrtracker.models.entities.Department;
 import com.hrtracker.repositories.DepartmentRepository;
 import com.hrtracker.services.DepartmentService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,21 +19,25 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Department> getAllDepartment() {
         return this.departmentRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Department> getDepartmentById(Long id) {
         return departmentRepository.findById(id);
     }
 
     @Override
+    @Transactional
     public Department createDepartment(Department department) {
         return departmentRepository.save(department);
     }
 
     @Override
+    @Transactional
     public Department updateDepartment(Long id, Department department) {
         Optional<Department> existingDepartmentOpt = departmentRepository.findById(id);
         if (existingDepartmentOpt.isEmpty()) {
@@ -45,6 +50,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    @Transactional
     public void deleteDepartment(Long id) {
         departmentRepository.deleteById(id);
     }
