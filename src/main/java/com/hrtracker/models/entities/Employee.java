@@ -32,6 +32,6 @@ public class Employee {
 
     @ManyToOne
     @JoinColumn(name = "department_id")
-    @JsonBackReference
+    @JsonBackReference // Evita la serializacion recursiva
     private Department department;
 }
