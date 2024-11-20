@@ -1,5 +1,6 @@
 package com.hrtracker.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,5 +25,6 @@ public class Department {
     private String name;
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Employee> employees = new ArrayList<>();
 }
