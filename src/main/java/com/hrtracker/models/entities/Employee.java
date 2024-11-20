@@ -1,5 +1,6 @@
 package com.hrtracker.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,5 +32,6 @@ public class Employee {
 
     @ManyToOne
     @JoinColumn(name = "department_id")
+    @JsonBackReference // Evita la serializacion recursiva
     private Department department;
 }
