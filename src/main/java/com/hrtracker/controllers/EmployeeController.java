@@ -1,7 +1,11 @@
 package com.hrtracker.controllers;
 
+import com.hrtracker.models.dtos.EmployeeCreateDto;
+import com.hrtracker.models.dtos.EmployeeDto;
 import com.hrtracker.models.entities.Employee;
 import com.hrtracker.services.EmployeeService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,18 +14,15 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/employee")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    public EmployeeController(EmployeeService employeeService) {
-        this.employeeService = employeeService;
-    }
-
     @GetMapping
-    public ResponseEntity<List<Employee>> findAllEmployees() {
-        List<Employee> employees = employeeService.getAllEmployees();
+    public ResponseEntity<List<EmployeeDto>> findAllEmployees() {
+        List<EmployeeDto> employees = employeeService.getAllEmployees();
         if (employees.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
@@ -29,27 +30,21 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> findEmployeeById(@PathVariable Long id) {
-        Optional<Employee> employee = employeeService.getEmployeeById(id);
-        if (employee.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(employee.get());
+    public ResponseEntity<EmployeeDto> findEmployeeById(@PathVariable Long id) {
+        return employeeService.getEmployeeById(id)
+                .map(employee -> ResponseEntity.status(HttpStatus.OK).body(employee))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
-        try {
-            Employee newEmployee = employeeService.createEmployee(employee);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newEmployee);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+    public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeCreateDto employeeCreateDto) {
+        EmployeeDto newEmployee = employeeService.createEmployee(employeeCreateDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newEmployee);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
-        Employee updatedEmployee = employeeService.updateEmployee(id, employee);
+    public ResponseEntity<EmployeeDto> updateEmployee(@Valid @PathVariable Long id, @RequestBody Employee employee) {
+        EmployeeDto updatedEmployee = employeeService.updateEmployee(id, employee);
         if (updatedEmployee == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -57,8 +52,8 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Employee> deleteEmployee(@PathVariable Long id) {
-        Optional<Employee> optionalEmployee = employeeService.getEmployeeById(id);
+    public ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
+        Optional<EmployeeDto> optionalEmployee = employeeService.getEmployeeById(id);
         if (optionalEmployee.isPresent()) {
             employeeService.deleteEmployee(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
