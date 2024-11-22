@@ -1,16 +1,17 @@
 package com.hrtracker.services;
 
+import com.hrtracker.models.dtos.EmployeeCreateDto;
+import com.hrtracker.models.dtos.EmployeeDto;
 import com.hrtracker.models.entities.Employee;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeService {
 
-    List<Employee> getAllEmployees();
-    Optional<Employee> getEmployeeById(Long id);
-    Employee createEmployee(Employee employee);
-    Employee updateEmployee(Long id, Employee employee);
+    List<EmployeeDto> getAllEmployees();
+    Optional<EmployeeDto> getEmployeeById(Long id);
+    EmployeeDto createEmployee(EmployeeCreateDto employee);
+    EmployeeDto updateEmployee(Long id, Employee employee);
     void deleteEmployee(Long id);
 }
