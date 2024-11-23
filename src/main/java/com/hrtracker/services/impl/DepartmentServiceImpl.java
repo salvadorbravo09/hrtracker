@@ -1,56 +1,62 @@
 package com.hrtracker.services.impl;
 
+import com.hrtracker.mapper.DepartmentMapper;
+import com.hrtracker.models.dtos.DepartmentCreateDto;
+import com.hrtracker.models.dtos.DepartmentDto;
+import com.hrtracker.models.dtos.DepartmentSimpleDto;
 import com.hrtracker.models.entities.Department;
 import com.hrtracker.repositories.DepartmentRepository;
 import com.hrtracker.services.DepartmentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
 
-    public DepartmentServiceImpl(DepartmentRepository departmentRepository) {
-        this.departmentRepository = departmentRepository;
+    @Override
+    public List<DepartmentSimpleDto> getAllDepartment() {
+        return departmentRepository.findAll()
+                .stream()
+                .map(department -> DepartmentMapper.convertEntityToSimpleDto(department))
+                .collect(Collectors.toList());
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Department> getAllDepartment() {
-        return this.departmentRepository.findAll();
+    public Optional<DepartmentSimpleDto> getDepartmentById(Long id) {
+        return departmentRepository.findById(id)
+                .map(department -> DepartmentMapper.convertEntityToSimpleDto(department));
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Optional<Department> getDepartmentById(Long id) {
-        return departmentRepository.findById(id);
+    public DepartmentSimpleDto createDepartment(DepartmentCreateDto departmentCreateDto) {
+        Department newDepartment = DepartmentMapper.convertCreateDtoToEntity(departmentCreateDto);
+        Department savedDepartment = departmentRepository.save(newDepartment);
+        return DepartmentMapper.convertEntityToSimpleDto(savedDepartment);
     }
 
     @Override
-    @Transactional
-    public Department createDepartment(Department department) {
-        return departmentRepository.save(department);
-    }
+    public DepartmentSimpleDto updateDepartment(Long id, DepartmentCreateDto departmentCreateDto) {
+        Optional<Department> existingDepartment = departmentRepository.findById(id);
 
-    @Override
-    @Transactional
-    public Department updateDepartment(Long id, Department department) {
-        Optional<Department> existingDepartmentOpt = departmentRepository.findById(id);
-        if (existingDepartmentOpt.isEmpty()) {
-            return null;
+        if (existingDepartment.isPresent()) {
+            Department departmentToUpdate = existingDepartment.get();
+            departmentToUpdate.setName(departmentCreateDto.getName());
+
+            Department updatedDepartment = departmentRepository.save(departmentToUpdate);
+            return DepartmentMapper.convertEntityToSimpleDto(updatedDepartment);
+        } else {
+            throw new RuntimeException("Department not found with id: " + id);
         }
-
-        Department updatedDepartment = existingDepartmentOpt.get();
-        updatedDepartment.setName(department.getName());
-        return departmentRepository.save(updatedDepartment);
     }
 
     @Override
-    @Transactional
     public void deleteDepartment(Long id) {
         departmentRepository.deleteById(id);
     }
