@@ -5,6 +5,7 @@ import com.hrtracker.models.dtos.DepartmentDto;
 import com.hrtracker.models.dtos.DepartmentSimpleDto;
 import com.hrtracker.models.entities.Department;
 import com.hrtracker.services.DepartmentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/department")
 @RequiredArgsConstructor
+@Tag(name = "Department", description = "Operations related to departments")
 public class DepartmentController {
 
     private final DepartmentService departmentService;

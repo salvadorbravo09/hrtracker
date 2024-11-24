@@ -4,6 +4,7 @@ import com.hrtracker.models.dtos.EmployeeCreateDto;
 import com.hrtracker.models.dtos.EmployeeDto;
 import com.hrtracker.models.entities.Employee;
 import com.hrtracker.services.EmployeeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/employee")
+@Tag(name = "Employee", description = "Operations related to employees")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
