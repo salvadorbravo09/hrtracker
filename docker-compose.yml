@@ -17,10 +17,10 @@ services:
     image: mysql
     container_name: mysql_database
     environment:
-      MYSQL_ROOT_PASSWORD: alejandrobravo09
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: hr_tracker
-      MYSQL_USER: sbravoc
-      MYSQL_PASSWORD: 092003
+      MYSQL_USER: root
+      MYSQL_PASSWORD: alejandrobravo09
     ports:
       - "3307:3306"
     networks:
