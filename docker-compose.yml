@@ -1,5 +1,6 @@
 version: "3.9"
 services:
+
   hrtracker-api-image:
     image: hrtracker-api-image
     container_name: spring-api-container
