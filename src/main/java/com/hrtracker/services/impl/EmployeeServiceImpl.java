@@ -8,6 +8,8 @@ import com.hrtracker.repositories.DepartmentRepository;
 import com.hrtracker.repositories.EmployeeRepository;
 import com.hrtracker.services.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +30,11 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .stream()
                 .map(employee -> EmployeeMapper.convertEntityToDto(employee))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<Employee> findAll(Pageable pageable) {
+        return this.employeeRepository.findAll(pageable);
     }
 
     @Override
